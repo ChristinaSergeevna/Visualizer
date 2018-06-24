@@ -1,9 +1,9 @@
 var svg = null, view = null, backdropContainer = null, 
     itemContainer = null, rulerContainer = null,
-    draggedSvg = null, backdrop = null, selected = null;
+    draggedSvg = null, backdrop = null, selected = [];
 
-var points = [{ cx1: (-100), cy1: (-100), r1: 100,
-              x1: (250), y1: (-250), size: 100 }];  
+// var points = [{ cx1: (-100), cy1: (-100), r1: 100,
+//               x1: (250), y1: (-250), size: 100 }];  
 
 function init() {
     svg = d3.select("body").append('svg')
@@ -105,12 +105,14 @@ var zoomInItem = d3.select("body").append("p")
             .attr('value', '+')
             .style('width', '30px')
             .on("click", function() {
-                if (selected) {
-                    var el = d3.select(selected).select('.draggableSquare');
-                    var w = +el.attr('width'), h = +el.attr('height');
-                    var x = +el.attr('x'), y = +el.attr('y');
-                    el.attr('width', w + 10); el.attr('height', h + 10);
-                    el.attr('x', x - 5); el.attr('y', y - 5);
+                for (var i = 0; i < selected.length; i++) {
+                    if (selected[i]) {
+                        var el = d3.select(selected[i]);
+                        var w = +el.attr('width'), h = +el.attr('height');
+                        var x = +el.attr('x'), y = +el.attr('y');
+                        el.attr('width', w + 10); el.attr('height', h + 10);
+                        el.attr('x', x - 5); el.attr('y', y - 5);
+                    }
                 }
             });
 
@@ -125,12 +127,14 @@ var zoomOutItem = d3.select("body").append("p")
             .attr('value', '-')
             .style('width', '30px')
             .on("click", function() {
-                if (selected) {
-                    var el = d3.select(selected).select('.draggableSquare');
-                    var w = +el.attr('width'), h = +el.attr('height');
-                    var x = +el.attr('x'), y = +el.attr('y');
-                    el.attr('width', w - 10); el.attr('height', h - 10);
-                    el.attr('x', x + 5); el.attr('y', y + 5);
+                for (var i = 0; i < selected.length; i++) {
+                    if (selected[i]) {
+                        var el = d3.select(selected[i]);
+                        var w = +el.attr('width'), h = +el.attr('height');
+                        var x = +el.attr('x'), y = +el.attr('y');
+                        el.attr('width', w - 10); el.attr('height', h - 10);
+                        el.attr('x', x + 5); el.attr('y', y + 5);
+                    }
                 }
             });
 
@@ -146,25 +150,26 @@ var ruler = d3.select("body").append("p")
             .attr("type", "button")
             .attr('value', 'Ruler')
             .style('width', '80px')
-            .on("click", addRuler);
+            .on("click", function() {
+                draggedSvg = backdropContainer.append('circle')
+                    .attr('r', 50)
+                    .attr('fill', 'none');
+                });
 
-var p = [{}];  
-
-function addRuler() {
-    draggedSvg = backdropContainer.append('circle')
-        .attr('r', 50)
-        .attr('fill', 'none');
-}
+var p = [{}]; 
+var points = [{}];   
 
 function clearDrawing() {
     if (draggedSvg) 
         draggedSvg.remove();
     draggedSvg = null;
     if (svg) {
+        // backdrop.remove();
+        backdrop = null;
         rulerContainer.remove();
         rulerContainer = null;
         p = [{}]; 
-        svg.on('mousedown', null);
+        // svg.on('mousedown', null);
         view.exit().remove();
         svg.remove();
         svg = null;
@@ -185,13 +190,20 @@ var dragme = d3.drag()
         .on("start", function(d) {
             var thisdragY = d3.select(this).attr("cy");
             var thisdragX = d3.select(this).attr("cx");
-            var thisdragR = d3.select(this).attr("r");
+            var thisdragR = +d3.select(this).attr("r");
+            rulerContainer.append("circle") 
+                .attr('class', 'ruler2')
+                .attr("cx", thisdragX)
+                .attr("cy", thisdragY)
+                .attr("r", thisdragR / 6)
+                .style('fill-opacity', 0.5)
+                .attr("fill", "black");
             dragdot2 = rulerContainer.append("circle") 
+                    .attr('class', 'ruler2')
                     .attr("cx", thisdragX)
                     .attr("cy", thisdragY)
                     .attr("r", thisdragR)
-                    .style('fill-opacity', 0.5)
-                    .attr("fill", "blue");
+                    .style('fill-opacity', 0.0);
             dragline = rulerContainer.append("line")
                     .attr("x1", thisdragX)
                     .attr("x2", thisdragX)
@@ -204,7 +216,7 @@ var dragme = d3.drag()
             var coord = d3.mouse(this); 
             var xx = coord[0], yy = coord[1];
             dragline.attr("x2", xx).attr("y2", yy);
-            dragdot2.attr("cx", xx).attr("cy", yy);
+            d3.selectAll(".ruler2").attr("cx", xx).attr("cy", yy).attr('fill', 'blue');
         })
         .on("end", function(d) {
             dragdot2.call(d3.drag()
@@ -212,23 +224,30 @@ var dragme = d3.drag()
                     var coord = d3.mouse(this); 
                     var xx = coord[0], yy = coord[1];
                     dragline.attr("x2", xx).attr("y2", yy);
-                    d3.select(this).attr("cx", d.x = xx).attr("cy", yy);
+                    d3.selectAll(".ruler2").attr("cx", xx).attr("cy", yy).attr('fill', 'blue');
                     text
                         .attr("y", (yy > dragline.attr("y1") ? yy - 30 : yy + 30))
                         .attr("x", (xx > dragline.attr("x1") ? xx - 30 : xx + 30))
                         .attr('text-anchor', 'middle')
                         .text(Math.round(dragline.node().getTotalLength() * 1000) / 1000);
+                })
+                .on("end", function() {
+                    d3.selectAll(".ruler2").attr('fill', 'black');
                 }));
             d3.select(this).call(d3.drag()
                 .on("drag", function() {
                     var coord = d3.mouse(this); 
                     var xx = coord[0], yy = coord[1];
                     dragline.attr("x1", xx).attr("y1", yy);
-                    d3.select(this).attr("cx", d.x = xx).attr("cy", yy);
+                    d3.selectAll(".ruler").attr("cx", xx).attr("cy", yy).attr('fill', 'blue');
                     text
                         .attr('text-anchor', 'middle')
                         .text(Math.round(dragline.node().getTotalLength() * 1000) / 1000);
+                })
+                .on("end", function() {
+                    d3.selectAll(".ruler").attr('fill', 'black');
                 }));
+            d3.selectAll(".ruler2").attr('fill', 'black');
             text = rulerContainer.append("text")
                 .attr("y", (dragline.attr("y1") < dragline.attr("y2") ? dragline.attr("y2") - 30 : dragline.attr("y2") + 30))
                 .attr("x", (dragline.attr("x1") < dragline.attr("x2") ? dragline.attr("x2") - 30 : dragline.attr("x2") + 30))
@@ -238,8 +257,7 @@ var dragme = d3.drag()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-function draw()
-{
+function draw() {
     if (currentTransform) 
         view.attr('transform', currentTransform);
     
@@ -264,58 +282,11 @@ function draw()
         .on('dblclick.zoom', null);
 
     initItemContainer();
-
-    // backdropContainer = view.append('g')
-    //     .attr('transform', function() {
-    //         return 'translate(' + xScale(0) + ',' + yScale(0) + ')';
-    //     });
-
-    // backdrop = backdropContainer
-    //     .lower()
-    //     .append('rect')
-    //     .attr('x', -width * 2)
-    //     .attr('y', -height * 2)
-    //     .attr('class', 'table-backdrop')
-    //     .attr('height', height * 3)
-    //     .attr('width', width * 3)
-    //     .attr('opacity', '0');
-
-    //     backdrop.on('mousedown', function() {
-    //         var mouse = d3.mouse(this);
-    //         if (draggedSvg && svg) {
-    //             var x = mouse[0];
-    //             var y = mouse[1];
-    //             newItem(x, y);
-    //         }
-    //     });
-
-    // rulerContainer = view.selectAll("g")
-    //     .attr("class", "rulerContainer")
-    //     .data(p).enter().append('g')
-    //     .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
-
-    // var item = rulerContainer.append('circle')
-    //     .attr('class', 'table-graphic')
-    //     .attr('cx', d => d.x)
-    //     .attr('cy', d => d.y)
-    //     .attr('r', 5)
-    //     .style('fill-opacity', 0.5)
-    //     .attr('fill', 'blue')
-    //     .call(dragme);
-
-    // addCircle(itemContainer, d => d.cx1, d => d.cy1, d => d.r1, 3, 'LightBlue', 'LightCyan');
-    // addSquare(itemContainer, d => d.x1, d => d.y1, d => d.size, 3.5, 'none', 'Grey'); 
-    // addLine(itemContainer, -350, 150, 0, 150, 2.5, 'orange'); 
-    // addLine(itemContainer, -350, 100, 0, 200, 2.5, 'orange'); 
-    // addArc(itemContainer, 200, 200, 50, 80, 2.5, 'black');
-
-    // var points = [{ cx1: (-100), cy1: (-100), r1: 100,
-    //           x1: (250), y1: (-250), size: 100 }];  
+    initRulerContainer();
 }
 draw();
 
-function zoomed() 
-{
+function zoomed() {
     currentTransform = d3.event.transform;
     view.attr("transform", currentTransform);
     gX.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
@@ -323,13 +294,11 @@ function zoomed()
     slider.property("value", d3.event.scale);
 }
 
-function slided(d) 
-{
+function slided(d) {
     zoom.scaleTo(svg, d3.select(this).property("value"));
 }
 
-function resetted() 
-{
+function resetted() {
     svg.transition()
         .duration(750)
         .call(zoom.transform, d3.zoomIdentity);
@@ -338,8 +307,7 @@ function resetted()
 
 /*************************************** figures ***************************************/
 
-function addCircle(container, cx, cy, r, lwidth = 2.5, clr = 'black', clrf = 'none') 
-{   
+function addCircle(container, cx, cy, r, lwidth = 2.5, clr = 'black', clrf = 'none') {   
     var drag = d3.drag()
         .on('drag', function() {
             container.select(this)
@@ -383,8 +351,7 @@ function addCircle(container, cx, cy, r, lwidth = 2.5, clr = 'black', clrf = 'no
         .call(drag);
 }
 
-function addLine(container, x1, y1, x2, y2, lwidth = 2.5, clr = 'black') 
-{       
+function addLine(container, x1, y1, x2, y2, lwidth = 2.5, clr = 'black') {       
     container.append('line')
         .style('stroke', clr)
         .style('stroke-width', lwidth)
@@ -394,8 +361,7 @@ function addLine(container, x1, y1, x2, y2, lwidth = 2.5, clr = 'black')
         .attr('y2', y2);
 }
 
-function addSquare(container, x, y, len, lwidth = 2.5, clr = 'black', clrf = 'none') 
-{   
+function addSquare(container, x, y, len, lwidth = 2.5, clr = 'black', clrf = 'none') {   
     var item = container.append('rect')
         .style('stroke', clr)
         .style('stroke-width', lwidth)
@@ -408,32 +374,30 @@ function addSquare(container, x, y, len, lwidth = 2.5, clr = 'black', clrf = 'no
         .attr('data-rotation', 0)
         .attr('rx', 0)
         .on('click', function(d) { 
-            if (selected)
-            {
-                var el = d3.select(selected).select('.draggableSquare');
-                selected = null;
-                el.style('stroke-width', lwidth);
-                el.style('stroke', clr);
+            for (var i = 0; i < selected.length; i++) {
+               if (selected[i] == this) {
+                    var el = d3.select(this);
+                    selected.splice(i, 1);
+                    el.style('stroke-width', lwidth);
+                    el.style('stroke', clr);
+                    return;
+                }
             }
-            else
-            {
-                selected = this.parentNode; 
-                var el = d3.select(selected).select('.draggableSquare');
-                el.style('stroke-width', 2);
-                el.style('stroke', 'black');
-            }
+            selected.push(this);
+            var el = d3.select(this);
+            el.style('stroke-width', 2);
+            el.style('stroke', 'black');
         });
 }
 
-function addArc(container, cx, cy, r1, r2, lwidth = 2.5, clr = 'black', clrf = 'none')
-{   
+function addArc(container, cx, cy, r1, r2, lwidth = 2.5, clr = 'black', clrf = 'none') {   
     var arc = d3.arc()
         .innerRadius(r1)
         .outerRadius(r2)
         .startAngle(45 * (Math.PI / 180))
         .endAngle(10);
     
-    container.append("g").append("path")
+    return container.append("g").append("path")
         .style('stroke', clr)
         .style('stroke-width', lwidth)
         .style('fill-opacity', 0.5)
@@ -444,8 +408,7 @@ function addArc(container, cx, cy, r1, r2, lwidth = 2.5, clr = 'black', clrf = '
 
 /*************************************** intersections ***************************************/
 
-function intersectionLines(ax, ay, bx, by, cx, cy, dx, dy)
-{
+function intersectionLines(ax, ay, bx, by, cx, cy, dx, dy) {
     var det = (ax - bx) * (cy - dy) - (ay - by) * (cx - dx);
     var d1 = ax * by - ay * bx,
         d2 = cx * dy - cy * dx;
@@ -462,8 +425,7 @@ function intersectionLines(ax, ay, bx, by, cx, cy, dx, dy)
     return {x: ix, y: iy, inter: isIntersection};
 }
 
-function intersectionCircles(x0, y0, r0, x1, y1, r1) 
-{
+function intersectionCircles(x0, y0, r0, x1, y1, r1) {
     var dx = x1 - x0, dy = y1 - y0;
     var d = Math.sqrt((dy * dy) + (dx * dx));
 
@@ -484,63 +446,111 @@ function intersectionCircles(x0, y0, r0, x1, y1, r1)
     return [xi, xi_prime, yi, yi_prime];
 }
 
-/*************************************** init container ***************************************/
-
-var points = [{ cx1: (-100), cy1: (-100), r1: 100,
-              x1: (250), y1: (-250), size: 100 }];  
-
+/*************************************** init containers ***************************************/
 function initItemContainer() {
     itemContainer = view.selectAll("g")
             .attr("class", "itemContainer")
             .data(points).enter().append('g')
             .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
-    
-    addCircle(itemContainer, d => d.cx1, d => d.cy1, d => d.r1, 3, 'LightBlue', 'LightCyan');
-    addSquare(itemContainer, d => d.x1, d => d.y1, d => d.size, 3.5, 'none', 'Grey'); 
+
+    points.push({ cx1: 100, cy1: 100, size: 100 });
+    addCircle(itemContainer, d => d.cx1, d => d.cy1, d => d.size, 3, 'LightBlue', 'LightCyan');
+    addSquare(itemContainer, d => d.cx1, d => d.cy1, d => d.size, 3.5, 'none', 'Red'); 
+    points.push({ x0: -350, y0: 150, x1: 0, y1: 150 });
+    points.push({ x10: -350, y10: 100, x11: 0, y11: 200 });
     addLine(itemContainer, -350, 150, 0, 150, 2.5, 'orange'); 
     addLine(itemContainer, -350, 100, 0, 200, 2.5, 'orange'); 
-    addArc(itemContainer, 200, 200, 50, 80, 2.5, 'black');
+    // addArc(itemContainer, 200, 200, 50, 80, 2.5, 'black');
     
     var interPoint = intersectionLines(-350, 150, 0, 150, -350, 100, 0, 200);
+
+    points.push({ x: interPoint.x, y: interPoint.y });
+
     itemContainer.append('circle')
         .attr('fill', interPoint.inter ? 'red' : 'black')
         .attr('cx', interPoint.x)
         .attr('cy', interPoint.y)
         .attr('r', 5);
     
-    var x1 = -150, y1 = -100, x2 = -50, y2 = -100, r1 = 100, r2 = 100;
+    // var x1 = -150, y1 = -100, x2 = -50, y2 = -100, r1 = 100, r2 = 100;
     
-    itemContainer.append('circle')
-        .style('stroke', "black")
-        .style('stroke-width', 3) 
-        .style('fill-opacity', 0.5)
-        .attr('fill', 'none')
-        .attr('cx', x1)
-        .attr('cy', y1)
-        .attr('r', r1);
-    itemContainer.append('circle')
-        .style('stroke', "black")
-        .style('stroke-width', 3) 
-        .style('fill-opacity', 0.5)
-        .attr('fill', 'none')
-        .attr('cx', x2)
-        .attr('cy', y2)
-        .attr('r', r2);
+    // itemContainer.append('circle')
+    //     .style('stroke', "black")
+    //     .style('stroke-width', 3) 
+    //     .style('fill-opacity', 0.5)
+    //     .attr('fill', 'none')
+    //     .attr('cx', x1)
+    //     .attr('cy', y1)
+    //     .attr('r', r1);
+    // itemContainer.append('circle')
+    //     .style('stroke', "black")
+    //     .style('stroke-width', 3) 
+    //     .style('fill-opacity', 0.5)
+    //     .attr('fill', 'none')
+    //     .attr('cx', x2)
+    //     .attr('cy', y2)
+    //     .attr('r', r2);
     
-    var interPoints = intersectionCircles(x1, y1, r1, x2, y2, r2); 
+    // var interPoints = intersectionCircles(x1, y1, r1, x2, y2, r2); 
     
-    itemContainer.append("g").append("path")
-        .attr("d", function() {
-            return "M" + interPoints[0] + "," + interPoints[2] + "A" + r2 + "," + r2 +
-            " 0 0,1 " + interPoints[1] + "," + interPoints[3]+ "A" + r1 + "," + r1 +
-            " 0 0,1 " + interPoints[0] + "," + interPoints[2];
-        })
-        .style('stroke-width', 3) 
-        .style('stroke', 'red')
-        .style('fill-opacity', 0.5)
-        .style('fill', 'IndianRed');
+    // itemContainer.append("g").append("path")
+    //     .attr("d", function() {
+    //         return "M" + interPoints[0] + "," + interPoints[2] + "A" + r2 + "," + r2 +
+    //         " 0 0,1 " + interPoints[1] + "," + interPoints[3]+ "A" + r1 + "," + r1 +
+    //         " 0 0,1 " + interPoints[0] + "," + interPoints[2];
+    //     })
+    //     .style('stroke-width', 3) 
+    //     .style('stroke', 'red')
+    //     .style('fill-opacity', 0.5)
+    //     .style('fill', 'IndianRed');
 }
-// initItemContainer();
+
+function initRulerContainer() {
+    backdropContainer = view.append('g')
+        .attr('transform', function() {
+            return 'translate(' + xScale(0) + ',' + yScale(0) + ')';
+        });
+
+    backdrop = backdropContainer
+        .lower()
+        .append('rect')
+        .attr('class', 'table-backdrop')
+        .attr('x', -width * 2)
+        .attr('y', -height * 2)
+        .attr('height', height * 3)
+        .attr('width', width * 3)
+        .attr('opacity', '0');
+
+        backdrop.on('mousedown', function() {
+            var mouse = d3.mouse(this);
+            if (draggedSvg && svg) {
+                var x = mouse[0];
+                var y = mouse[1];
+                newItem(x, y);
+            }
+        });
+
+    rulerContainer = view.selectAll(".table-backdrop")
+        .attr("class", "rulerContainer")
+        .data(p).enter().append('g')
+        .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
+
+    rulerContainer.append('circle')
+        .attr('class', 'ruler')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .attr('r', 5)
+        .style('fill-opacity', 0.5)
+        .attr('fill', 'black');
+
+    var item = rulerContainer.append('circle')
+        .attr('class', 'ruler')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .attr('r', 30)
+        .style('fill-opacity', 0.0)
+        .call(dragme); 
+}
 
 /*************************************** init angle ***************************************/
 
@@ -603,8 +613,7 @@ compareHandle.append("circle")
 var compareText = compareHandle.append("text")
       .attr("dy", -15);
 
-function update() 
-{
+function update() {
     var source = sourceVector.datum(),
         compare = compareVector.datum();
 
