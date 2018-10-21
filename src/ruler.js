@@ -11,22 +11,27 @@ module.exports = class Ruler {
         var text = null; 
         var dragline = null;
 
-        var buttonRuler = d3.select("body").append("p")
-            .style('display', 'block')
-            .style('position', 'absolute')
-            .style('top', '50px')
-            .style('left', '45px')
-            .append("input")
-                .datum({})
-                .attr("type", "button")
-                .attr('value', 'Ruler')
-                .style('width', '80px')
-                .on("click", function() {
-                    draggedSvg = backdropContainer.append('circle')
-                        .attr('r', 50)
-                        .attr('fill', 'none');
-                    t += 1;
-                });
+        var xScale = d3.scaleLinear()
+            .domain([-width / 2, width / 2])
+            .range([0, width]);
+        var yScale = d3.scaleLinear()
+            .domain([-height / 2, height / 2])
+            .range([height, 0]);
+
+        // var buttonRuler = d3.select(".inset_content").append("button")
+        //     .style('display', 'block')
+        //     .style('position', 'absolute')
+        //     .style('top', '260px')
+        //     .style('left', '30px')
+        //     .style('width', '80px')
+        //     .on("click", function() {
+        //         draggedSvg = backdropContainer.append('circle')
+        //             .attr('r', 50)
+        //             .attr('fill', 'none');
+        //         t += 1;
+        //     })
+        //     .append('text')
+        //         .text('Ruler');
 
         var dragme = d3.drag()
             .on("start", function(d) {
@@ -110,14 +115,40 @@ module.exports = class Ruler {
 
         backdropContainer = view.append('g')
             .attr('transform', function() {
-                return 'translate(' + Grid.xScale(0) + ',' + Grid.yScale(0) + ')';
+                return 'translate(' + xScale(0) + ',' + yScale(0) + ')';
             });
         rulerContainer = view.selectAll(".backdrop")
                 .attr("class", "rulerContainer")
                 .data(pointsRuler).enter().append('g')
-                .attr("transform", () => 'translate(' + Grid.xScale(0) + ',' + Grid.yScale(0) + ')');
+                .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
     
-        alert('я туть');
+        view.on("dblclick", function(e) {
+                // draggedSvg = backdropContainer.append('circle')
+                //     .attr('r', 50)
+                //     .attr('fill', 'none');
+                // alert('');
+                t += 1;
+                // if (draggedSvg) {
+                //     draggedSvg.remove();
+                //     draggedSvg = null;
+                    var mouse = d3.mouse(svg);
+                    var x = mouse[0], y = mouse[1];
+                    pointsRuler.push({ x: x, y: y });
+                    rulerContainer.append('circle')
+                        .attr('class', 'ruler')
+                        .attr('cx', x).attr('cy', y)
+                        .attr('r', 5)
+                        .style('fill-opacity', 0.5)
+                        .attr('fill', 'black');
+                    rulerContainer.append('circle')
+                        .attr('class', 'ruler')
+                        .attr('cx', x).attr('cy', y)
+                        .attr('r', 30)
+                        .style('fill-opacity', 0.0)
+                        .call(dragme);
+                    // }
+            });
+
         backdrop = backdropContainer
             .lower()
             .append('rect')
@@ -135,24 +166,29 @@ module.exports = class Ruler {
                     var mouse = d3.mouse(this);
                     var x = mouse[0], y = mouse[1];
                     pointsRuler.push({ x: x, y: y });
+
                     rulerContainer.append('circle')
                         .attr('class', 'ruler')
                         .attr('cx', x).attr('cy', y)
                         .attr('r', 5)
                         .style('fill-opacity', 0.5)
                         .attr('fill', 'black');
+
+                    // rulerContainer.append("line")
+                    //     .attr('class', 'lruler')
+                    //     // .style('fill-opacity', 0.0)
+                    //     .attr("x1", 0).attr("y1", 100)
+                    //     .attr("x2", 0).attr("y2", 100)
+                    //     .style("stroke", "black")
+                    //     .style("stroke-width", "1");
                     rulerContainer.append('circle')
                         .attr('class', 'ruler')
                         .attr('cx', x).attr('cy', y)
                         .attr('r', 30)
                         .style('fill-opacity', 0.0)
                         .call(dragme);
+            alert('');
                 }
             });
     }    
-    
-    // initRulerContainer(view, grid, width, height) {
-        
-    // }
-    
 }
