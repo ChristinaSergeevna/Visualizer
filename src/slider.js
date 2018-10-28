@@ -1,7 +1,6 @@
 module.exports = class Slider {
     constructor(top, left, range, cl, fun, args) {
-        var step = 0,
-            widthSlider = 70, xVal = 0;
+        var step = 0, widthSlider = 70, xVal = 0;
 
         var slider = d3.select('.inset_content').append('svg')
             .attr('width', widthSlider + 50)
