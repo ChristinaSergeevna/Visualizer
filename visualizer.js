@@ -1,9 +1,6 @@
 var svg = null, view = null, backdropContainer = null, 
-    itemContainer = null, rulerContainer = null,
-    draggedSvg = null, backdrop = null, selected = [];
-
-// var points = [{ cx1: (-100), cy1: (-100), r1: 100,
-//               x1: (250), y1: (-250), size: 100 }];  
+    itemContainer = null, rulerContainer = null, angleContainer = null,
+    draggedSvg = null, backdrop = null, selected = [];  
 
 function init() {
     svg = d3.select("body").append('svg')
@@ -42,7 +39,13 @@ var yAxis = d3.axisRight(yScale)
 var zoom = d3.zoom()
     .scaleExtent([0.5, 5])
     .translateExtent([[-width * 2, -height * 2], [width * 2, height * 2]])
-    .on("zoom", zoomed);
+    .on("zoom", function() {
+        currentTransform = d3.event.transform;
+        view.attr("transform", currentTransform);
+        gX.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
+        gY.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));
+        slider.property("value", d3.event.scale);
+    });
 
 var slider = d3.select("body").append("p")
         .style('display', 'block')
@@ -56,7 +59,9 @@ var slider = d3.select("body").append("p")
             .attr("min", zoom.scaleExtent()[0])
             .attr("max", zoom.scaleExtent()[1])
             .attr("step", (zoom.scaleExtent()[1] - zoom.scaleExtent()[0]) / 100)
-            .on("input", slided);
+            .on("input", function(d) {
+                zoom.scaleTo(svg, d3.select(this).property("value"));
+            });
 
 var reset = d3.select("body").append("p")
         .style('display', 'block')
@@ -68,7 +73,12 @@ var reset = d3.select("body").append("p")
             .attr("type", "button")
             .attr('value', 'Reset')
             .style('width', '80px')
-            .on("click", resetted);
+            .on("click", function() {
+                svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity);
+                slider.property("value", 1);
+            });
 
 var addFigure = d3.select("body").append("p")
         .style('display', 'block')
@@ -156,9 +166,6 @@ var ruler = d3.select("body").append("p")
                     .attr('fill', 'none');
                 });
 
-var p = [{}]; 
-var points = [{}];   
-
 function clearDrawing() {
     if (draggedSvg) 
         draggedSvg.remove();
@@ -168,7 +175,10 @@ function clearDrawing() {
         backdrop = null;
         rulerContainer.remove();
         rulerContainer = null;
-        p = [{}]; 
+        itemContainer.remove();
+        itemContainer = null;
+        pointsRuler = [{}]; 
+        pointsItems = [{}]; 
         // svg.on('mousedown', null);
         view.exit().remove();
         svg.remove();
@@ -179,7 +189,7 @@ function clearDrawing() {
 function newItem(x, y) {
     clearDrawing();
     init();
-    p.push({ x: x, y: y });
+    pointsRuler.push({ x: x, y: y });
     draw();
 }
 
@@ -257,7 +267,10 @@ var dragme = d3.drag()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-function draw() {
+var pointsRuler = [{}]; 
+var pointsItems = [{}];  
+
+function drawGrid() {
     if (currentTransform) 
         view.attr('transform', currentTransform);
     
@@ -280,32 +293,34 @@ function draw() {
     svg.call(zoom)
         .on("wheel.zoom", null)
         .on('dblclick.zoom', null);
+}
 
+function draw() {
+    drawGrid();
     initItemContainer();
     initRulerContainer();
 }
 draw();
 
-function zoomed() {
-    currentTransform = d3.event.transform;
-    view.attr("transform", currentTransform);
-    gX.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
-    gY.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));
-    slider.property("value", d3.event.scale);
-}
-
-function slided(d) {
-    zoom.scaleTo(svg, d3.select(this).property("value"));
-}
-
-function resetted() {
-    svg.transition()
-        .duration(750)
-        .call(zoom.transform, d3.zoomIdentity);
-    slider.property("value", 1);
-}
-
 /*************************************** figures ***************************************/
+
+function animatedCircle(circle) {
+    circle
+        .transition()
+        .duration(3000)
+        .delay(2000);
+
+    circle    
+        .on("click", function() {
+            d3.select(this)
+                .transition()
+                .duration(3000)
+                .attr("cx", Math.random() * 700)
+                .attr("cy", Math.random() * 300)
+                .style("fill", d3.rgb( Math.random() * 255, Math.random() * 255, Math.random() * 255 ))
+                .attr("r", Math.random() * 100);
+        });
+}
 
 function addCircle(container, cx, cy, r, lwidth = 2.5, clr = 'black', clrf = 'none') {   
     var drag = d3.drag()
@@ -450,27 +465,35 @@ function intersectionCircles(x0, y0, r0, x1, y1, r1) {
 function initItemContainer() {
     itemContainer = view.selectAll("g")
             .attr("class", "itemContainer")
-            .data(points).enter().append('g')
+            .data(pointsItems).enter().append('g')
             .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
 
-    points.push({ cx1: 100, cy1: 100, size: 100 });
-    addCircle(itemContainer, d => d.cx1, d => d.cy1, d => d.size, 3, 'LightBlue', 'LightCyan');
-    addSquare(itemContainer, d => d.cx1, d => d.cy1, d => d.size, 3.5, 'none', 'Red'); 
-    points.push({ x0: -350, y0: 150, x1: 0, y1: 150 });
-    points.push({ x10: -350, y10: 100, x11: 0, y11: 200 });
+    pointsItems.push({ cx1: 100, cy1: 100, size: 100 });
+    addCircle(itemContainer, 100, 100, 100, 3, 'LightBlue', 'LightCyan');
+    addSquare(itemContainer, 100, 100, 100, 3.5, 'none', 'Red'); 
+    pointsItems.push({ x0: -350, y0: 150, x1: 0, y1: 150 });
+    pointsItems.push({ x10: -350, y10: 100, x11: 0, y11: 200 });
     addLine(itemContainer, -350, 150, 0, 150, 2.5, 'orange'); 
     addLine(itemContainer, -350, 100, 0, 200, 2.5, 'orange'); 
     // addArc(itemContainer, 200, 200, 50, 80, 2.5, 'black');
     
     var interPoint = intersectionLines(-350, 150, 0, 150, -350, 100, 0, 200);
 
-    points.push({ x: interPoint.x, y: interPoint.y });
+    pointsItems.push({ x: interPoint.x, y: interPoint.y });
 
     itemContainer.append('circle')
         .attr('fill', interPoint.inter ? 'red' : 'black')
         .attr('cx', interPoint.x)
         .attr('cy', interPoint.y)
         .attr('r', 5);
+
+    var circle = itemContainer.append('circle')
+        .attr('fill', 'black')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 50);
+
+    animatedCircle(circle);
     
     // var x1 = -150, y1 = -100, x2 = -50, y2 = -100, r1 = 100, r2 = 100;
     
@@ -532,7 +555,7 @@ function initRulerContainer() {
 
     rulerContainer = view.selectAll(".table-backdrop")
         .attr("class", "rulerContainer")
-        .data(p).enter().append('g')
+        .data(pointsRuler).enter().append('g')
         .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
 
     rulerContainer.append('circle')
@@ -554,64 +577,71 @@ function initRulerContainer() {
 
 /*************************************** init angle ***************************************/
 
-svg.append("svg:defs")
-        .append("svg:marker")
-            .attr("id", "arrowhead")
-            .attr("viewBox", "0 0 10 10")
-            .attr("refX", 5)
-            .attr("refY", 5)
-            .attr("markerUnits", "strokeWidth")
-            .attr("markerWidth", 8)
-            .attr("markerHeight", 8)
-            .attr("orient", "auto")
-            .append("svg:path")
-                .attr("d", "M 0 0 L 10 5 L 0 10 z");
+function initAngle() {
+    svg.append("svg:defs")
+            .append("svg:marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 5)
+                .attr("refY", 5)
+                .attr("markerUnits", "strokeWidth")
+                .attr("markerWidth", 8)
+                .attr("markerHeight", 8)
+                .attr("orient", "auto")
+                .append("svg:path")
+                    .attr("d", "M 0 0 L 10 5 L 0 10 z");
+    
+    angleContainer = view.selectAll("g")
+            .attr("class", "angleContainer")
+            .append("g")
+                .attr("transform", "translate(" + 200 + "," + 150 + ")");
+    
+    var drag = d3.drag().on("drag", function(d) { 
+        d.x = d3.event.x; 
+        d.y = d3.event.y; 
+        update(); 
+    });
 
-var angleContainer = view.selectAll("g")
-        .attr("class", "angleContainer")
-        .append("g")
-            .attr("transform", "translate(" + 200 + "," + 150 + ")");
-
-var drag = d3.drag().on("drag", function(d) { d.x = d3.event.x; d.y = d3.event.y; update(); });
-var arc = d3.arc();
-var format = d3.format(".2f")
-
-var differenceArc = angleContainer.append("g").datum({});
-var differencePath = differenceArc.append("path")
-    .attr("class", "difference");                        
-var differenceText = differenceArc.append("text");
-
-var sourceVector = angleContainer.append("g")
-    .attr("class", "source")
-    .datum({x: 0, y: -200});
-var sourceHandle = sourceVector.append("g")
-    .attr("class", "handle")
-    .call(drag);
-var sourceLine = sourceVector.append("line")
-    .style('stroke', 'black')
-    .attr("marker-end", "url(#arrowhead)");
-sourceHandle.append("circle")
-    .style('fill-opacity', 0.0)
-    .attr('fill', 'white')
-    .attr("r", 20);
-var sourceText = sourceHandle.append("text")
-    .attr("dy", -15);
-
-var compareVector = angleContainer.append("g")
-    .attr("class", "compare")
-    .datum({x: 200, y: 0});
-var compareHandle = compareVector.append("g")
-    .attr("class", "handle")
-    .call(drag);
-var compareLine = compareVector.append("line")
-    .style('stroke', 'black')
-    .attr("marker-end", "url(#arrowhead)");
-compareHandle.append("circle")
-    .style('fill-opacity', 0.0)
-    .attr('fill', 'white')
-    .attr("r", 20);
-var compareText = compareHandle.append("text")
-      .attr("dy", -15);
+    var arc = d3.arc();
+    var format = d3.format(".2f")
+    
+    var differenceArc = angleContainer.append("g").datum({});
+    var differencePath = differenceArc.append("path")
+        .attr("class", "difference");                        
+    var differenceText = differenceArc.append("text");
+    
+    var sourceVector = angleContainer.append("g")
+        .attr("class", "source")
+        .datum({x: 0, y: -200});
+    var sourceHandle = sourceVector.append("g")
+        .attr("class", "handle")
+        .call(drag);
+    var sourceLine = sourceVector.append("line")
+        .style('stroke', 'black')
+        .attr("marker-end", "url(#arrowhead)");
+    sourceHandle.append("circle")
+        .style('fill-opacity', 0.0)
+        .attr('fill', 'white')
+        .attr("r", 20);
+    var sourceText = sourceHandle.append("text")
+        .attr("dy", -15);
+    
+    var compareVector = angleContainer.append("g")
+        .attr("class", "compare")
+        .datum({x: 200, y: 0});
+    var compareHandle = compareVector.append("g")
+        .attr("class", "handle")
+        .call(drag);
+    var compareLine = compareVector.append("line")
+        .style('stroke', 'black')
+        .attr("marker-end", "url(#arrowhead)");
+    compareHandle.append("circle")
+        .style('fill-opacity', 0.0)
+        .attr('fill', 'white')
+        .attr("r", 20);
+    var compareText = compareHandle.append("text")
+          .attr("dy", -15);
+}
 
 function update() {
     var source = sourceVector.datum(),
@@ -622,6 +652,7 @@ function update() {
 
     var a1 = Math.atan2(compare.y, compare.x),
         a2 = Math.atan2(source.y, source.x);
+
     var sign = a1 > a2 ? 1 : -1;
     var angle = a1 - a2;
     var K = -sign * Math.PI * 2;

@@ -1,0 +1,27 @@
+{
+  "name": "visualizer",
+  "version": "1.0.0",
+  "description": "visualizer",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "npm-watch": "^0.3.0",
+    "webpack": "^3.10.0"
+  },
+  "devDependencies": {
+    "webpack": "^3.12.0"
+  },
+  "watch": {
+    "test": "{src,test}/*.js"
+  },
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack --progress --colors --watch --watch-poll",
+    "test": "tape test/*.js",
+    "watch": "npm-watch"
+  },
+  "author": "Kristina Belousova",
+  "license": "MIT"
+}

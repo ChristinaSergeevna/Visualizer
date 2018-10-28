@@ -1,12 +1,5 @@
-// module.exports = class Angle {
-    
-    var angleContainer = null, arc = d3.arc(),
-        sourceVector = null, compareVector = null,
-        sourceHandle = null, compareHandle = null, 
-        sourceLine = null, compareLine = null, 
-        differenceText = null, differencePath = null;
-    
-    function initAngle(data) {
+module.exports = class Angle {
+    constructor(data) {
         svg.append("svg:defs")
                 .append("svg:marker")
                     .attr("id", "arrowhead")
@@ -19,61 +12,58 @@
                     .attr("orient", "auto")
                     .append("svg:path")
                         .attr("d", "M 0 0 L 10 5 L 0 10 z");
-        
-        angleContainer = view.selectAll("g")
+
+        this.angleContainer = view.selectAll("g")
                 .attr("class", "angleContainer")
                 .append("g")
                     .attr("transform", "translate(" + data.cx + "," + data.cy + ")");
-        
+
         var drag = d3.drag()
             .on("drag", function(d) { 
                 d.x = d3.event.x; 
                 d.y = d3.event.y; 
                 update(); 
             });
-    
-        var format = d3.format(".2f")
         
         var differenceArc = angleContainer.append("g").datum({});
-        differencePath = differenceArc.append("path")
+        this.differencePath = differenceArc.append("path")
             .attr("class", "difference");                        
-        differenceText = differenceArc.append("text");
+        this.differenceText = differenceArc.append("text");
         
-        sourceVector = angleContainer.append("g")
+        this.sourceVector = angleContainer.append("g")
             .attr("class", "source")
             .datum({x: data.x1, y: data.y1});
-        sourceHandle = sourceVector.append("g")
+        this.sourceHandle = sourceVector.append("g")
             .attr("class", "handle")
             .call(drag);
-        sourceLine = sourceVector.append("line")
+        this.sourceLine = sourceVector.append("line")
             .style('stroke', 'black')
             .attr("marker-end", "url(#arrowhead)");
-        sourceHandle.append("circle")
+        this.sourceHandle.append("circle")
             .style('fill-opacity', 0.0)
             .attr('fill', 'white')
             .attr("r", 20);
         var sourceText = sourceHandle.append("text")
             .attr("dy", -15);
         
-        compareVector = angleContainer.append("g")
+        this.compareVector = angleContainer.append("g")
             .attr("class", "compare")
             .datum({x: data.x2, y: data.y2});
-        compareHandle = compareVector.append("g")
+        this.compareHandle = compareVector.append("g")
             .attr("class", "handle")
             .call(drag);
-        compareLine = compareVector.append("line")
+        this.compareLine = compareVector.append("line")
             .style('stroke', 'black')
             .attr("marker-end", "url(#arrowhead)");
-        compareHandle.append("circle")
+        this.compareHandle.append("circle")
             .style('fill-opacity', 0.0)
             .attr('fill', 'white')
             .attr("r", 20);
         var compareText = compareHandle.append("text")
             .attr("dy", -15);
-        update();
     }
 
-    function update() {
+    update() {
         var source = sourceVector.datum(),
             compare = compareVector.datum();
     
@@ -100,7 +90,8 @@
             .attr("y2", (d) => d.y);
     
         compareHandle.attr("transform", (d) => `translate(${d.x}, ${d.y})`)
-    
+
+        var arc = d3.arc();
         arc
             .innerRadius(0)
             .outerRadius(Math.max(30, Math.min(sourceLength, compareLength) * 0.9))
@@ -114,5 +105,5 @@
             .attr("transform", "translate(" + arc.centroid() + ")")
             .text(Math.abs(Math.round(360 * angle / (Math.PI * 2))) + "º")
     }
-    
-// }
+
+}
