@@ -16,6 +16,7 @@ module.exports = class Panel {
             .attr('id', 'block_inset')
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             .style('display', 'none')
             .style('position', 'absolute')
             .style('top', '0px')
@@ -73,6 +74,8 @@ module.exports = class Panel {
             .style('z-index', 3);
 
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             .style('position', 'absolute')
@@ -134,6 +137,9 @@ module.exports = class Panel {
             .style('z-index', 3); 
     
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -144,6 +150,7 @@ module.exports = class Panel {
             .style('padding', '0px')
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             .style('width', '100%')
             .style('height', '100%')
             .style('color', '#fff')
@@ -151,6 +158,8 @@ module.exports = class Panel {
             .style('overflow-y', 'auto');
     }
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             .style('width', '100%') 
@@ -203,6 +212,9 @@ module.exports = class Panel {
     //     }
     // }
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a

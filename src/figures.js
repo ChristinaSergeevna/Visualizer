@@ -13,6 +13,7 @@ module.exports = class Figures {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.pointsItems = [];
         this.itemContainer = view.selectAll('g')
                 .attr('class', 'itemContainer')
@@ -21,12 +22,17 @@ module.exports = class Figures {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         this.pointsItems = [];//data.input;//.concat(data.output);
         this.itemContainer = view.selectAll("g")
                 .attr("class", "itemContainer")
                 .data(data[0].res).enter().append('g')
                 .attr("transform", () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -36,9 +42,15 @@ module.exports = class Figures {
         this.linepath = [];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.pauseValues = [];
 
         this.deleteItems = [];
+=======
+        this.pauseValues = []; 
+
+        this.deleteItems = []; 
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
         this.pauseValues = []; 
 
@@ -63,6 +75,7 @@ module.exports = class Figures {
             'point': { lwidth: 3, clrf: '#8B0000', clr: '#DC143C' }
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -114,6 +127,8 @@ module.exports = class Figures {
     }
 }
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         for (var res = [], sol = [], i = 0; i < data.length; ++i) {
@@ -261,6 +276,10 @@ module.exports = class Figures {
     //             .text('Delete');   
     // }
 <<<<<<< HEAD
+<<<<<<< HEAD
+}   
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 }   
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======

@@ -12,7 +12,11 @@ export class Visualizer {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         var div = d3.select('body').append('div')
+=======
+        var div = d3.select("body").append('div')
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
         var div = d3.select("body").append('div')
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -23,6 +27,7 @@ export class Visualizer {
                 .style('position', 'absolute')
                 .style('top', '30px')
                 .style('left', '50px')
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 .attr('width', width + margin.left + margin.right)
@@ -38,6 +43,8 @@ export class Visualizer {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .style('background-color', '#eee');
@@ -51,6 +58,9 @@ export class Visualizer {
                 .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -64,6 +74,12 @@ export class Visualizer {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        // var width = document.body.clientWidth;
+        // var height = document.body.clientHeight;
+
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
         // var width = document.body.clientWidth;
         // var height = document.body.clientHeight;
@@ -80,6 +96,7 @@ export class Visualizer {
     static canvas(svg, margin, width, height, data) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         var view = svg.append('svg')
             .attr('id', 'view')
             .attr('width', width)
@@ -87,11 +104,16 @@ export class Visualizer {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         var view = svg.append("svg")
             .attr('id', 'view')
             .attr("width", width)
             .attr("height", height)
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -102,7 +124,11 @@ export class Visualizer {
                 .style('font-size', '12px')
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .attr('class', 'view');
+=======
+                .attr("class", "view");
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
                 .attr("class", "view");
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -119,10 +145,16 @@ export class Visualizer {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         d3.selectAll('.button')
             .style('border', 'none')
             .style('outline-style', 'none')
             .style('color', '#ededed')
+=======
+        d3.selectAll(".button")
+            .style('border', 'none')
+            .style('color', 'white')
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
         d3.selectAll(".button")
             .style('border', 'none')
@@ -142,6 +174,7 @@ export class Visualizer {
             .style('padding', '0 12px')
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             .on('mouseover', function() {
                 var button = d3.select(this);
                 button.style('background-color', '#696969');
@@ -152,6 +185,8 @@ export class Visualizer {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             .on("mouseover", function() {
                 var button = d3.select(this);
                 button.style('background-color', '#696969');
@@ -160,6 +195,9 @@ export class Visualizer {
                 d3.select(this).style('background-color', '#CD5C5C');
             }); 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a

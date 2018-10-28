@@ -7,8 +7,14 @@ module.exports = class Figure {
         this.container = container;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.datapath = data.slice(1, data.length);
 
+=======
+    } 
+
+    create() {
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
     } 
 
@@ -23,6 +29,7 @@ module.exports = class Figure {
         switch (item) {
             case 'selectSquare':
             case 'square':
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 this.obj = Square(this.data, this.container, this.style);
@@ -57,6 +64,8 @@ module.exports = class Figure {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
                 return Square(this.data, this.container, this.style);
             case 'selectCircle':
             case 'circle':
@@ -78,6 +87,9 @@ module.exports = class Figure {
             default:
                 break;        
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -87,6 +99,7 @@ module.exports = class Figure {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function Circle(data, container, style) {
     return container.append('circle')
         .style('stroke', style.clr)
@@ -94,11 +107,16 @@ function Circle(data, container, style) {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 function Circle(data, container, style) {   
     return container.append('circle')
         .style('stroke', style.clr)
         .style('stroke-width', style.lwidth) 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -123,6 +141,7 @@ function Path(data, container, style) {
         });
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     return container.append('g').append('path')
         .data([data])
@@ -132,6 +151,8 @@ function Path(data, container, style) {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
     
     return container.append("g").append("path")
         .data([data])
@@ -139,6 +160,9 @@ function Path(data, container, style) {
         .attr("d", line)
         .attr("d", function(d) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -146,6 +170,7 @@ function Path(data, container, style) {
         })
         .style('stroke', style.clr)
         .style('stroke-width', style.lwidth)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         .attr('fill', 'none')
@@ -162,6 +187,8 @@ function IntersectionPoint(data, container, style) {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         .attr("fill", "none")
         .style('stroke-dasharray', '4px, 8px');      
 }
@@ -174,6 +201,9 @@ function IntersectionPoint(data, container, style) {
         .attr('text-anchor', 'middle')
         .text('x: ' + data[0] + '; y: ' + data[1]);
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -183,7 +213,11 @@ function IntersectionPoint(data, container, style) {
         .style('stroke', style.clr)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         .style('stroke-width', style.lwidth)
+=======
+        .style('stroke-width', style.lwidth) 
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
         .style('stroke-width', style.lwidth) 
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -195,6 +229,7 @@ function IntersectionPoint(data, container, style) {
         .attr('cy', data[1])
         .attr('r', data[2]);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -211,6 +246,8 @@ function Line(data, container, style) {
         .style('stroke', style.clr)
         .style('stroke-width', 1)
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
     
@@ -261,6 +298,9 @@ function Line(data, container, style) {
         .style('stroke', style.clr)
         // .style('stroke-width', style.lwidth)
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -271,9 +311,15 @@ function Line(data, container, style) {
         .attr('y2', data[3]);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 function Square(data, container, style) {
+=======
+}  
+
+function Square(data, container, style) { 
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 }  
 
@@ -290,6 +336,7 @@ function Square(data, container, style) {
         .attr('fill', style.clrf)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         .style('fill-opacity', 0.8)
         .attr('class', 'selectSquare')
         .attr('x', data[0])
@@ -298,12 +345,17 @@ function Square(data, container, style) {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         .style('fill-opacity', 0.7)
         .attr('class', 'selectSquare')
         .attr('x', data[0])
         .attr('y', data[1])
         .attr('width', data[2]) 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -314,8 +366,13 @@ function Square(data, container, style) {
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 function Arc(data, container, style) {
+=======
+    
+function Arc(data, container, style) {   
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
     
 function Arc(data, container, style) {   
@@ -331,6 +388,7 @@ function Arc(data, container, style) {
         .endAngle(10);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     return container.append('g').append('path')
         .style('stroke', style.clr)
@@ -343,6 +401,8 @@ function Arc(data, container, style) {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
     
     return container.append("g").append("path")
         .style('stroke', style.clr)
@@ -353,6 +413,9 @@ function Arc(data, container, style) {
         .attr('d', arc)
         .attr('transform', "translate(" + data[0] + "," + data[1] +")");
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a

@@ -6,6 +6,7 @@ module.exports = class Intersections {
         var ix = (_d1 * (d2.attr('x1') - d2.attr('x2')) - _d2 * (d1.attr('x1') - d1.attr('x2'))) / det,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             iy = (_d1 * (d2.attr('y1') - d2.attr('y2')) - _d2 * (d1.attr('y1') - d1.attr('y2'))) / det;
         var isIntersection = !(d1.attr('x1') < ix ^ ix < d1.attr('x2')) && !(d2.attr('x1') < ix ^ ix < d2.attr('x2'));
 
@@ -37,6 +38,8 @@ module.exports = class Intersections {
             .style('fill-opacity', 0.7)
             .style('fill', 'IndianRed');
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             iy = (_d1 * (d2.attr('x1') - d2.attr('y2')) - _d2 * (d1.attr('y1') - d1.attr('y2'))) / det;
@@ -76,6 +79,9 @@ module.exports = class Intersections {
                 " 0 0,1 " + xi + "," + yi;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a

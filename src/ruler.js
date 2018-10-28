@@ -7,6 +7,7 @@ module.exports = class Ruler {
         var pointsRuler = [{}];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         var draggedSvg = null;
         var backdrop = null;
         var t = 0;
@@ -14,11 +15,16 @@ module.exports = class Ruler {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         var draggedSvg = null; 
         var backdrop = null; 
         var t = 0;  
         var text = null; 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -31,6 +37,7 @@ module.exports = class Ruler {
             .domain([-height / 2, height / 2])
             .range([height, 0]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         var buttonRuler = d3.select('.inset_content').append('button')
@@ -122,6 +129,8 @@ module.exports = class Ruler {
                     .text(Math.round(dragline.node().getTotalLength()));
             });
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         // var buttonRuler = d3.select(".inset_content").append("button")
@@ -219,6 +228,9 @@ module.exports = class Ruler {
             });
         // buttonStyle(buttonRuler);
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -229,11 +241,14 @@ module.exports = class Ruler {
             });
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         rulerContainer = view.selectAll('.backdrop')
                 .attr('class', 'rulerContainer')
                 .data(pointsRuler).enter().append('g')
                 .attr('transform', () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
         rulerContainer = view.selectAll(".backdrop")
@@ -268,6 +283,9 @@ module.exports = class Ruler {
                     // }
             });
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -283,7 +301,11 @@ module.exports = class Ruler {
             .attr('opacity', '0');
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
     
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -300,8 +322,11 @@ module.exports = class Ruler {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     var cir = rulerContainer.append('circle')
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
                     rulerContainer.append('circle')
@@ -320,6 +345,9 @@ module.exports = class Ruler {
                     //     .style("stroke-width", "1");
                     rulerContainer.append('circle')
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -328,6 +356,7 @@ module.exports = class Ruler {
                         .attr('r', 30)
                         .style('fill-opacity', 0.0)
                         .call(dragme);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                     view.on('mousemove', function() {
@@ -341,11 +370,16 @@ module.exports = class Ruler {
 =======
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             alert('');
                 }
             });
     }    
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a

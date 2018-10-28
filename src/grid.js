@@ -1,7 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 var Slider = require('./Slider.js')
 
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
@@ -13,7 +16,11 @@ module.exports = class Grid {
         var range = [0, 5], step = 0,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             widthSlider = 80, xVal = 0;
+=======
+            widthSlider = 110, xVal = 0;
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
             widthSlider = 110, xVal = 0;
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -29,7 +36,11 @@ module.exports = class Grid {
             .range([0, height]);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
         
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -48,6 +59,7 @@ module.exports = class Grid {
             .translateExtent([[-width * 2, -height * 2], [width * 2, height * 2]])
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             .on('zoom', function() {
                 currentTransform = d3.event.transform;
                 view.attr('transform', currentTransform);
@@ -63,6 +75,8 @@ module.exports = class Grid {
 
         var reset = d3.select('.inset_content').append('button')
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             .on("zoom", function() {
@@ -104,6 +118,9 @@ module.exports = class Grid {
 
         var reset = d3.select(".inset_content").append("button")
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -114,6 +131,7 @@ module.exports = class Grid {
                 .style('left', '30px')
                 .style('text', 'Reset')
                 .style('width', '80px')
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 .on('click', function() {
@@ -153,6 +171,8 @@ module.exports = class Grid {
             .call(yAxis);
 
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
                 .on("click", function() {
@@ -195,6 +215,9 @@ module.exports = class Grid {
         // gY.selectAll('path').style("display", "none");
     
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -204,7 +227,11 @@ module.exports = class Grid {
                 var xy = d3.mouse(this);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 var xy1 = [xScale.invert(xy[0]), yScale.invert(xy[1])];
+=======
+                var xy1 = [xScale.invert(xy[0]), yScale.invert(xy[1])];            
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
                 var xy1 = [xScale.invert(xy[0]), yScale.invert(xy[1])];            
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
@@ -219,11 +246,14 @@ module.exports = class Grid {
             })
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             .on('wheel.zoom', null)
             .on('dblclick.zoom', null);
     }
 }
 =======
+=======
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
             .on("wheel.zoom", null)
@@ -344,6 +374,10 @@ module.exports = class Grid {
             // })
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+}   
+>>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
+=======
 }   
 >>>>>>> cc772097ff407809e39c70d18355a17e9974c74a
 =======
