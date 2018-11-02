@@ -1,16 +1,5 @@
 module.exports = class Panel {
-    constructor() {
-        this._open_panel = 0;
-        this.open_panel = 0;
-        this.open_begin = 0;
-        this.set_motor = false;
-        this.delta_x = 10;
-        this.time_pause_motor = 1;
-    }
-
     static create() {
-        var panel = new Panel();
-
         var block_inset = d3.select('.block').append('div')
             .attr('class', 'block_inset')
             .attr('id', 'block_inset')

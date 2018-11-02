@@ -1,8 +1,8 @@
 var Slider = require('./Slider.js')
 
 module.exports = class Animation {
-    constructor(obj) {
-        var speed = { val: 0.1 };
+    static create(obj) {
+        var speed = { val: 0.1 }, range = [0.001, 0.51];
 
         function translateAlong(obj, j) {
             var l = obj.linepath[j].obj.node().getTotalLength();
@@ -27,13 +27,10 @@ module.exports = class Animation {
                 });
         }
 
-        var start = d3.select('.inset_content').append('button')
+        d3.select('.inset_content').append('button')
             .attr('class', 'button')
-            .style('display', 'block')
-            .style('position', 'absolute')
             .style('top', '80px')
             .style('left', '30px')
-            .style('width', '80px')
             .on('click', function() {
                 for (var i = 0; i < obj.animated.length; ++i) {
                     obj.animated[i].obj.attr('transform', 'translate(' + 100 + ',' + 100 + ')');
@@ -45,13 +42,10 @@ module.exports = class Animation {
             .append('text')
                 .text('Start');
 
-        var pause = d3.select('.inset_content').append('button')
+        d3.select('.inset_content').append('button')
             .attr('class', 'button')
-            .style('display', 'block')
-            .style('position', 'absolute')
             .style('top', '110px')
             .style('left', '30px')
-            .style('width', '80px')
             .on('click', function(d) {
                 var button = d3.select(this);
                 if (d3.select('.btext').text() == 'Pause') {
@@ -74,13 +68,10 @@ module.exports = class Animation {
                 .attr('class', 'btext');
 
         var j = 0;
-        var nextStep = d3.select('.inset_content').append('button')
+        d3.select('.inset_content').append('button')
             .attr('class', 'button')
-            .style('display', 'block')
-            .style('position', 'absolute')
             .style('top', '190px')
             .style('left', '30px')
-            .style('width', '80px')
             .on('click', function(d) {
                 ++j;
                 for (var i = 0; i < obj.animated.length; ++i) {
@@ -94,13 +85,10 @@ module.exports = class Animation {
                 .text('>>')
                 .attr('class', 'btext');
 
-        var prevStep = d3.select('.inset_content').append('button')
+        d3.select('.inset_content').append('button')
             .attr('class', 'button')
-            .style('display', 'block')
-            .style('position', 'absolute')
             .style('top', '220px')
             .style('left', '30px')
-            .style('width', '80px')
             .on('click', function(d) {
                 --j;
                 for (var i = 0; i < obj.animated.length; ++i) {
@@ -118,6 +106,6 @@ module.exports = class Animation {
             args.speed.val = xVal;
         }
 
-        new Slider(95, 0, [0.001, 0.51], 'olol', fun, { speed: speed })
+        new Slider(95, 0, range, 'speedanim', fun, { speed: speed }, speed.val, ['slower', 'faster'])
     }
 }

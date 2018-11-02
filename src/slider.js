@@ -1,30 +1,30 @@
 module.exports = class Slider {
-    constructor(top, left, range, cl, fun, args) {
-        var step = 0, widthSlider = 70, xVal = 0;
+    constructor(top, left, range, cl, fun, args, init, tickname) {
+        var step = 0, widthSlider = 70, xVal = 0,
+            margin = {top: 35, left: 10}, height = 50;
 
         var slider = d3.select('.inset_content').append('svg')
-            .attr('width', widthSlider + 50)
-            .attr('height', 50)
+            .attr('width', widthSlider + height)
+            .attr('height', height)
             .attr('transform', 'translate(' + left +', '+ top + ')')
                 .append('g')
                     .classed('slider', true)
-                    .attr('transform', 'translate(' + (35) +', '+ (10) + ')');
-
-        var tf = ['slower', 'faster'];
+                    .attr('transform', 'translate(' + margin.top +', '+ margin.left + ')');
 
         var xScaleSlider = d3.scaleLinear()
             .domain(range)
             .range([0, widthSlider])
             .clamp(true);
-        var rangeValues = d3.range(range[0], range[1], step || 1.5).concat(range[1]);
+        var rangeValues = d3.range(range[0], range[1], step || 1).concat(range[1]);
         var xAxisSlider = d3.axisBottom(xScaleSlider)
             .tickValues(rangeValues)
             .tickFormat(function (d) {
-                if (d == 0.001)
-                    return tf[0];
-                else if (d == 0.51)
-                    return tf[1];
-                else
+                if (tickname) {
+                    for (var i = 0; i < range.length; ++i) {
+                        if (d == range[i]) return tickname[i];
+                    }
+                }
+                else if (d % 5 == 0)
                     return d + 'x';
         });
 
@@ -45,15 +45,12 @@ module.exports = class Slider {
             .style('stroke-linecap', 'round')
             .style('stroke-width', '10px')
             .style('stroke', '#ededed');
-            // .style('stroke', '#262626');
-            // .style('stroke-opacity', 0.8);
 
         var trackInset = d3.select(slider.node().appendChild(track.node().cloneNode()))
             .attr('class', 'track-inset')
             .style('stroke-linecap', 'round')
             .style('stroke-width', '8px')
             .style('stroke', '#ededed');
-            // .style('stroke', '#262626');
 
         var ticks = slider.append('g')
             .attr('class', 'ticks')
@@ -78,7 +75,7 @@ module.exports = class Slider {
         slider.transition()
             .duration(750)
             .tween('drag', function () {
-                var i = d3.interpolate(0, range[1] / 5);
+                var i = d3.interpolate(0, init);
                 return function (t) {
                     dragged(xScaleSlider(i(t)));
                 }

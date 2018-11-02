@@ -1,15 +1,9 @@
-var Grid = require('./Grid.js')
-
 module.exports = class Ruler {
-    constructor(view, grid, width, height) {
-        var backdropContainer = null;
-        var rulerContainer = null;
-        var pointsRuler = [{}];
-        var draggedSvg = null;
-        var backdrop = null;
-        var t = 0;
-        var text = null;
-        var dragline = null;
+    static create() {
+        var width = d3.select('.view').attr('width'),
+            height = d3.select('.view').attr('height'),
+            rulerContainer = null,
+            pointsRuler = [{}];
 
         var xScale = d3.scaleLinear()
             .domain([-width / 2, width / 2])
@@ -18,106 +12,117 @@ module.exports = class Ruler {
             .domain([-height / 2, height / 2])
             .range([height, 0]);
 
-        var buttonRuler = d3.select('.inset_content').append('button')
+        d3.select('.viewg').append('g')
+                .attr('class', 'itemContainer')
+                .attr('transform', () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
+
+         function snapToGrid(p, r) {
+            return Math.round(p / r) * r;
+        }
+
+        function dragCircle(circle, mouse) {
+            circle.attr('cx', mouse[0]).attr('cy', mouse[1]);
+            var rp = d3.select('.left_ruler_point');
+            var lp = d3.select('.right_ruler_point');
+            var x1 = snapToGrid(lp.attr('cx'), 1);
+            var y1 = snapToGrid(lp.attr('cy'), 1);
+            var x2 = snapToGrid(rp.attr('cx'), 1);
+            var y2 = snapToGrid(rp.attr('cy'), 1);
+            var line = d3.select('.ruler_line')
+                .attr('x1', x1)
+                .attr('y1', y1)
+                .attr('x2', x2)
+                .attr('y2', y2)
+                .style('stroke', 'blue');
+            d3.select('.text')
+                .attr('y', +y1 + (y2 - y1) / 2 - 10)
+                .attr('x', +x1 + (x2 - x1) / 2)
+                .text(Math.round(line.node().getTotalLength() * 100) / 100);
+        }
+
+        function createCircle(x, y, classname) {
+            rulerContainer.append('circle')
+                .attr('class', classname)
+                .attr('cx', x)
+                .attr('cy', y)
+                .attr('r', 20)
+                .attr('fill-opacity', 0.0)
+                .call(d3.drag()
+                    .on('drag', function(data) {
+                        dragCircle(d3.select(this), d3.mouse(this));
+                    })
+                    .on('end', function() {
+                        d3.select('.ruler_line')
+                            .style('stroke', 'black');
+                    })
+                );
+        }
+
+        d3.select('.inset_content').append('button')
             .attr('class', 'button')
-            .style('display', 'block')
-            .style('position', 'absolute')
             .style('top', '260px')
             .style('left', '30px')
-            .style('width', '80px')
             .on('click', function() {
-                draggedSvg = backdropContainer.append('circle')
-                    .attr('r', 50)
-                    .attr('fill', 'none');
-                t += 1;
+                d3.select('.itemContainer')
+                    .lower()
+                    .append('rect')
+                    .attr('class', 'backdropContainer')
+                    .attr('x', -width * 2)
+                    .attr('y', -height * 2)
+                    .attr('height', height * 3)
+                    .attr('width', width * 3)
+                    .attr('fill-opacity', 0.0)
+                    .call(d3.drag()
+                        .on('start', function(data) {
+                            d3.select('.left_ruler_point').remove();
+                            d3.select('.right_ruler_point').remove();
+                            d3.select('.ruler_line').remove();
+                            d3.select('.text').remove();
+                            var mouse = d3.mouse(this);
+                            var x = snapToGrid(mouse[0], 1);
+                            var y = snapToGrid(mouse[1], 1);
+                            pointsRuler.push({ x: x, y : y});
+                            createCircle(x, y, 'left_ruler_point');
+                            createCircle(x, y, 'right_ruler_point');
+                            var line = rulerContainer.append('line')
+                                .attr('class', 'ruler_line')
+                                .style('opacity', 0.3)
+                                .attr('x1', x).attr('y1', y)
+                                .attr('x2', x).attr('y2', y)
+                                .style('stroke-dasharray', '0.9 0.1')
+                                .style('stroke', 'black')
+                                .style('stroke-width', 7)
+                                .on('dblclick.zoom', function() {
+                                    d3.selectAll('.backdropContainer').remove();
+                                    d3.select('.left_ruler_point').remove();
+                                    d3.select('.right_ruler_point').remove();
+                                    d3.select('.ruler_line').remove();
+                                    d3.select('.text').remove();
+                                });
+                            rulerContainer.append('text')
+                                .attr('class', 'text')
+                                .attr('text-anchor', 'middle')
+                                .text(Math.round(line.node().getTotalLength() * 1000) / 1000);
+                        })
+                        .on('drag', function(data) {
+                            dragCircle(d3.select('.right_ruler_point'), d3.mouse(this));
+                        })
+                        .on('end', function(data) {
+                            d3.select('.ruler_line')
+                                .style('stroke', 'black');
+                            d3.selectAll('.backdropContainer').remove();
+                        })
+                    );
             })
             .append('text')
                 .text('Ruler');
 
-        var dragme = d3.drag()
-            .on('start', function(d) {
-                var thisdragY = d3.select(this).attr('cy');
-                var thisdragX = d3.select(this).attr('cx');
-                var thisdragR = +d3.select(this).attr('r');
-
-                if (t > 1) {
-                    var coord = d3.mouse(this);
-                    var xx = coord[0], yy = coord[1];
-                    d3.selectAll('.lruler').remove();
-                    d3.selectAll('.ruler').attr('cx', xx).attr('cy', yy);
-                    rulerContainer.selectAll('.ruler2').remove();
-                    rulerContainer.selectAll('.text').remove();
-                }
-                dragline = rulerContainer.append('line')
-                        .attr('class', 'lruler')
-                        .style('opacity', 0.5)
-                        .style('stroke-linecap', 'round')
-                        .attr('x1', thisdragX).attr('y1', thisdragY)
-                        .attr('x2', thisdragX).attr('y2', thisdragY)
-                        .style('stroke', 'black').style('stroke-width', '5');
-
-                rulerContainer.append('circle')
-                    .attr('class', 'ruler2')
-                    .attr('cx', thisdragX)
-                    .attr('cy', thisdragY)
-                    .attr('r', 30)
-                    .style('fill-opacity', 0.0);
-            })
-            .on('drag', function() {
-                var coord = d3.mouse(this);
-                var xx = coord[0], yy = coord[1];
-                d3.selectAll('.lruler').attr('x2', xx).attr('y2', yy).style('stroke', 'blue');
-                d3.selectAll('.ruler2').attr('cx', xx).attr('cy', yy);
-            })
-            .on('end', function(d) {
-                d3.selectAll('.ruler2').call(d3.drag()
-                    .on('drag', function() {
-                        var coord = d3.mouse(this);
-                        var xx = coord[0], yy = coord[1];
-                        d3.selectAll('.lruler').attr('x2', xx).attr('y2', yy).style('stroke', 'blue');
-                        d3.selectAll('.ruler2').attr('cx', xx).attr('cy', yy);
-                        text
-                            .attr('y', (yy > dragline.attr('y1') ? yy - 30 : yy + 30))
-                            .attr('x', (xx > dragline.attr('x1') ? xx - 30 : xx + 30))
-                            .attr('text-anchor', 'middle')
-                            .text(Math.round(dragline.node().getTotalLength()));
-                    })
-                    .on('end', function() {
-                        d3.selectAll('.lruler').style('stroke', 'black');
-                    }));
-                d3.select(this).call(d3.drag()
-                    .on('drag', function() {
-                        var coord = d3.mouse(this);
-                        var xx = coord[0], yy = coord[1];
-                        d3.selectAll('.lruler').attr('x1', xx).attr('y1', yy).style('stroke', 'blue');
-                        d3.selectAll('.ruler').attr('cx', xx).attr('cy', yy);
-                        text
-                            .attr('text-anchor', 'middle')
-                            .text(Math.round(dragline.node().getTotalLength()));
-                    })
-                    .on('end', function() {
-                        d3.selectAll('.lruler').style('stroke', 'black');
-                    }));
-                d3.selectAll('.lruler').style('stroke', 'black');
-                text = rulerContainer.append('text')
-                    .attr('class', 'text')
-                    .attr('y', (dragline.attr('y1') < dragline.attr('y2') ? dragline.attr('y2') - 30 : dragline.attr('y2') + 30))
-                    .attr('x', (dragline.attr('x1') < dragline.attr('x2') ? dragline.attr('x2') - 30 : dragline.attr('x2') + 30))
-                    .attr('text-anchor', 'middle')
-                    .text(Math.round(dragline.node().getTotalLength()));
-            });
-
-        backdropContainer = view.append('g')
-            .attr('transform', function() {
-                return 'translate(' + xScale(0) + ',' + yScale(0) + ')';
-            });
-
-        rulerContainer = view.selectAll('.backdrop')
+        rulerContainer = d3.select('.viewg').selectAll('.backdrop')
                 .attr('class', 'rulerContainer')
                 .data(pointsRuler).enter().append('g')
                 .attr('transform', () => 'translate(' + xScale(0) + ',' + yScale(0) + ')');
 
-        backdrop = backdropContainer
+        d3.select('.itemContainer')
             .lower()
             .append('rect')
             .attr('class', 'backdrop')
@@ -125,30 +130,6 @@ module.exports = class Ruler {
             .attr('y', -height * 2)
             .attr('height', height * 3)
             .attr('width', width * 3)
-            .attr('opacity', '0');
-
-            backdrop.on('mousedown', function() {
-                if (draggedSvg) {
-                    draggedSvg.remove();
-                    draggedSvg = null;
-                    var mouse = d3.mouse(this);
-                    var x = mouse[0], y = mouse[1];
-                    pointsRuler.push({ x: x, y: y });
-                    var cir = rulerContainer.append('circle')
-
-                    rulerContainer.append('circle')
-                        .attr('class', 'ruler')
-                        .attr('cx', x).attr('cy', y)
-                        .attr('r', 30)
-                        .style('fill-opacity', 0.0)
-                        .call(dragme);
-
-                    view.on('mousemove', function() {
-                        // cir.call(dragme);
-
-                    })
-
-                }
-            });
+            .attr('fill-opacity', 0.0);
     }
 }

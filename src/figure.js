@@ -9,25 +9,17 @@ module.exports = class Figure {
 
         var item = this.class;
         switch (item) {
-            case 'selectSquare':
             case 'square':
                 this.obj = Square(this.data, this.container, this.style);
                 break;
-            case 'selectCircle':
             case 'circle':
                 this.obj = Circle(this.data, this.container, this.style);
                 break;
             case 'animatedcircle':
                this.obj = AnimatedCircle(this.data, this.container, this.style);
                break;
-            case 'selectArc':
+            case 'arc':
                 this.obj = Arc(this.data, this.container, this.style);
-                break;
-            case 'draggableCircle':
-                this.obj = draggableCircle(this.data, this.container);
-                break;
-            case 'resizingCircle':
-                this.obj = resizingCircle(this.data, this.container);
                 break;
             case 'line':
                 this.obj = Line(this.data, this.container, this.style);
@@ -38,6 +30,9 @@ module.exports = class Figure {
             case 'path':
                 this.obj = Path(this.data, this.container, this.style);
                 break;
+            case 'angle':
+                this.obj = Angle(this.data, this.container, this.style);
+                break;
             default:
                 break;
         }
@@ -46,11 +41,9 @@ module.exports = class Figure {
 
 function Circle(data, container, style) {
     return container.append('circle')
-        .style('stroke', style.clr)
-        .style('stroke-width', style.lwidth)
-        .style('fill-opacity', 0.8)
-        .attr('fill', style.clrf)
-        .attr('class', 'selectCircle')
+        .datum(style)
+        .styles(function(d) { return d; })
+        .attr('class', 'circle')
         .attr('cx', data[0])
         .attr('cy', data[1])
         .attr('r', data[2]);
@@ -74,25 +67,41 @@ function Path(data, container, style) {
         .attr('d', function(d) {
             return line(d);
         })
-        .style('stroke', style.clr)
-        .style('stroke-width', style.lwidth)
+        .style('stroke', style.stroke)
         .attr('fill', 'none')
         .style('stroke-dasharray', '4px, 8px');
 }
 
 function IntersectionPoint(data, container, style) {
+    var margin = {top: 40, right: 40, bottom: 50, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var xScale = d3.scaleLinear()
+            .domain([-width / 2, width / 2])
+            .range([0, width]);
+        var yScale = d3.scaleLinear()
+            .domain([-height / 2, height / 2])
+            .range([0, height]);
+
     container.append('text')
         .attr('class', 'textCoord')
-        .attr('y', data[1] - 20)
+        // .attr('data', [data[0], data[1] - 20])
         .attr('x', data[0])
+        .attr('y', data[1] - 20)
         .attr('text-anchor', 'middle')
-        .text('x: ' + Math.round(data[0]) + '; y: ' + Math.round(data[1]));
+        .text(Math.round(data[0]) + ', ' + Math.round(data[1]))
+        .attr('font-weight', 100)
+        .attr('font-family', 'Times New Roman')
+        .attr('font-size', '12px');
+        // .attr('transform', function(d) {
+        //             return "translate(" + xScale(d[0]) + "," + yScale(d[1]) + ")";
+        //         });
 
     return container.append('circle')
         .attr('class', 'point')
-        .style('stroke', style.clr)
-        .style('stroke-width', style.lwidth)
-        .attr('fill', style.clrf)
+        .datum(style)
+        .styles(function(d) { return d; })
         .attr('cx', data[0])
         .attr('cy', data[1])
         .attr('r', data[2]);
@@ -108,7 +117,7 @@ function AnimatedCircle(data, container, style) {
 function Line(data, container, style) {
     return container.append('line')
         .style('shape-rendering','crispEdges')
-        .style('stroke', style.clr)
+        .style('stroke', style.stroke)
         .style('stroke-width', 1)
         .attr('class', 'line')
         .attr('x1', data[0])
@@ -119,18 +128,15 @@ function Line(data, container, style) {
 
 function Square(data, container, style) {
     return container.append('rect')
-        .style('stroke', style.clr)
-        .style('stroke-width', style.lwidth)
-        .attr('fill', style.clrf)
-        .style('fill-opacity', 0.8)
-        .attr('class', 'selectSquare')
+        .datum(style)
+        .styles(function(d) { return d; })
+        .attr('class', 'square')
         .attr('x', data[0])
         .attr('y', data[1])
         .attr('width', data[2])
         .attr('height', data[2])
         .attr('data-rotation', 0)
         .attr('rx', 0);
-        // .on('click', selectItem);
 }
 
 function Arc(data, container, style) {
@@ -141,11 +147,52 @@ function Arc(data, container, style) {
         .endAngle(10);
 
     return container.append('g').append('path')
-        .style('stroke', style.clr)
-        .style('stroke-width', style.lwidth)
-        .style('fill-opacity', 0.8)
-        .attr('class', 'selectArc')
-        .attr('fill', style.clrf)
+        .datum(style)
+        .styles(function(d) { return d; })
+        .attr('class', 'arc')
         .attr('d', arc)
         .attr('transform', 'translate(' + data[0] + ',' + data[1] +')');
+}
+
+function angleThreePoints(p1, p2, p3) {
+    function calc(p1, p2) {
+        return Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
+    }
+
+    var p12 = calc(p1, p2);
+    var p13 = calc(p1, p3);
+    var p23 = calc(p2, p3);
+
+    var resultRadian = Math.acos(((Math.pow(p12, 2)) + (Math.pow(p13, 2)) - (Math.pow(p23, 2))) / (2 * p12 * p13));
+    var resultDegree = Math.acos(((Math.pow(p12, 2)) + (Math.pow(p13, 2)) - (Math.pow(p23, 2))) / (2 * p12 * p13)) * 180 / Math.PI;
+
+    return {rad: resultRadian, deg: resultDegree};
+}
+
+function Angle(data, container, style) {
+    var angle = angleThreePoints(data[0], data[1], data[2]);
+    var startAngle = angleThreePoints(data[0], {x: data[0].x, y: -data[1].y}, data[1]);
+
+    var angleContainer = container.append('g')
+            .attr('transform', 'translate(' + data[0].x + ',' + data[0].y + ')');
+
+    var differenceArc = angleContainer.append('g').datum({});
+
+    var arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(50)
+        .startAngle(startAngle.rad)
+        .endAngle(startAngle.rad + angle.rad);
+
+    differenceArc.append('path')
+        .attr('class', 'difference')
+        .style('fill', style.fill)
+        .style('fill-opacity', style['opacity'])
+        .attr('d', arc());
+
+    differenceArc.append('text')
+        .attr('transform', 'translate(' + arc.centroid() + ')')
+        .text(Math.round(angle.deg) + 'º');
+
+    return differenceArc;
 }

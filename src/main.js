@@ -3,69 +3,59 @@ var Grid = require('./Grid.js')
 var Ruler = require('./Ruler.js')
 var Figures = require('./Figures.js')
 var Anim = require('./Animation.js')
+var Config = require('./Config.js')
 
 export class Visualizer {
     static SVG(data) {
-        var margin = {top: 40, right: 40, bottom: 50, left: 40},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+        d3.select('body').append('div')
+            .attr('class', 'block')
+            .style('position', 'absolute')
+            .style('top', '30px')
+            .style('left', '50px')
+            .attr('width', Config.width)
+            .attr('height', Config.height)
+            .style('background-color', '#eee')
+            .style('font-family', 'Times New Roman')
+            .style('font-size', '15px');
 
-        var div = d3.select('body').append('div')
-                .attr('class', 'block')
-                .style('position', 'absolute')
-                .style('top', '30px')
-                .style('left', '50px')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .style('background-color', '#eee');
+        d3.select('.block').append('svg')
+            .attr('width', Config.width)
+            .attr('height', Config.height)
+            .attr('display', 'block')
+            .append('g')
+                .attr('class', 'svg')
+                .attr('transform', 'translate(' + Config.margin.left + ',' + Config.margin.top + ')');
 
-        var svg = d3.select('.block').append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .attr('display', 'block')
-                .append('g')
-                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+        d3.select('.svg').append('text')
+            .attr('class', 'coord')
+            .attr('x', (Config.width - Config.margin.left - Config.margin.right) / 2)
+            .attr('y', Config.height - Config.margin.top - (Config.margin.bottom / 2))
+            .attr('text-anchor', 'middle')
+            .text('0, 0');
 
-        var coord = svg.append('text')
-                .attr('class', 'coord')
-                .attr('x', width / 2)
-                .attr('y', height + (margin.bottom / 2))
-                .attr('text-anchor', 'middle')
-                .text('0, 0');
-
-        this.canvas(svg, margin, width, height, data);
+        this.canvas(data);
     }
 
-    static canvas(svg, margin, width, height, data) {
-        var view = svg.append('svg')
+    static canvas(data) {
+        d3.select('.svg').append('svg')
             .attr('id', 'view')
-            .attr('width', width)
-            .attr('height', height)
-            .attr('left', margin.left)
-            .attr('top', margin.top)
+            .attr('class', 'view')
+            .attr('width', Config.width - Config.margin.left - Config.margin.right)
+            .attr('height', Config.height - Config.margin.top - Config.margin.bottom)
+            .attr('left', Config.margin.left)
+            .attr('top', Config.margin.top)
             .append('g')
-                // .style('font-family', 'sans-serif')
-                .style('font-size', '12px')
-                .attr('class', 'view');
+                .attr('class', 'viewg')
+                .style('font-size', '12px');
 
         Panel.create();
-
-        var grid = new Grid(svg, view, width, height);
-        var items = new Figures(view, grid, data, width, height);
-        var anim = new Anim(items);
-        var ruler = new Ruler(view, grid, width, height);
+        Grid.create();
+        Ruler.create();
+        Anim.create(new Figures(data));
 
         d3.selectAll('.button')
-            .style('border', 'none')
-            .style('outline-style', 'none')
-            .style('color', '#ededed')
-            .style('background', '#CD5C5C')
-            .style('height', '25px')
-            .style('cursor', 'pointer')
-            .style('padding-right', '26px')
-            .style('border-radius', '3px')
-            .style('margin', 0)
-            .style('padding', '0 12px')
+            .datum(Config.button)
+            .styles(function(d) { return d; })
             .on('mouseover', function() {
                 var button = d3.select(this);
                 button.style('background-color', '#696969');

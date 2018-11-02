@@ -1,11 +1,12 @@
 var Slider = require('./Slider.js')
 
 module.exports = class Grid {
-    constructor(svg, view, width, height) {
-        var gX = null, gY = null;
-        var currentTransform = null;
-        var range = [0, 5], step = 0,
-            widthSlider = 80, xVal = 0;
+    static create() {
+        var gX = null, gY = null,
+            currentTransform = null,
+            range = [0.5, 20], step = 0,
+            width = d3.select('.view').attr('width'),
+            height = d3.select('.view').attr('height');
 
         var xScale = d3.scaleLinear()
             .domain([-width / 2, width / 2])
@@ -22,50 +23,51 @@ module.exports = class Grid {
             .tickSize(-width);
 
         var zoom = d3.zoom()
-            .scaleExtent([0.5, 5])
+            .scaleExtent(range)
             .translateExtent([[-width * 2, -height * 2], [width * 2, height * 2]])
             .on('zoom', function() {
                 currentTransform = d3.event.transform;
-                view.attr('transform', currentTransform);
+                d3.select('.viewg').attr('transform', currentTransform);
                 gX.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
                 gY.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));
+                // d3.select('.textCoord').attr('transform', function(d) {
+                //     return "translate(" + xScale(d[0]) + "," + yScale(d[1]) + ")";
+                // });
             });
 
         function fun(args, xVal) {
-            args.zoom.scaleTo(args.svg, xVal);
+            args.zoom.scaleTo(d3.select('.svg'), xVal);
         }
 
-        var slider = new Slider(300, 0, [0.5, 5], 'sli', fun, { zoom: zoom , svg: svg});
+        var slider = new Slider(300, 0, [0, 20], 'grid', fun, { zoom: zoom}, 1);
 
-        var reset = d3.select('.inset_content').append('button')
+        function reset() {
+            d3.select('.svg').transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity);
+            slider.slider.transition()
+                .duration(750)
+                .tween('drag', function () {
+                    var i = d3.interpolate(slider.handle.attr('cx'), 8);
+                    return function (t) {
+                        var x = slider.xScaleSlider.invert(i(t));
+                        slider.handle.attr('cx', i(t));
+                    }
+                });
+        }
+
+        d3.select('.inset_content').append('button')
                 .attr('class', 'button')
-                .style('display', 'block')
-                .style('position', 'absolute')
                 .style('top', '40px')
                 .style('left', '30px')
-                .style('text', 'Reset')
-                .style('width', '80px')
-                .on('click', function() {
-                    svg.transition()
-                        .duration(750)
-                        .call(zoom.transform, d3.zoomIdentity);
-                    slider.slider.transition()
-                        .duration(750)
-                        .tween('drag', function () {
-                            var i = d3.interpolate(slider.handle.attr('cx'), 8);
-                            return function (t) {
-                                var x = slider.xScaleSlider.invert(i(t));
-                                slider.handle.attr('cx', i(t));
-                            }
-                        });
-                })
+                .on('click', reset)
                 .append('text')
                     .text('Reset');
 
         if (currentTransform)
-            view.attr('transform', currentTransform);
+            d3.select('.viewg').attr('transform', currentTransform);
 
-        gX = svg.append('g')
+        gX = d3.select('.svg').append('g')
             .style('stroke-opacity', 0.4)
             .attr('fill', 'none')
             .attr('stroke-width', 1)
@@ -73,7 +75,7 @@ module.exports = class Grid {
             .style('text-anchor', 'middle')
             .attr('class', 'axis axis--x')
             .call(xAxis);
-        gY = svg.append('g')
+        gY = d3.select('.svg').append('g')
             .style('stroke-opacity', 0.4)
             .attr('fill', 'none')
             .attr('stroke-width', 1)
@@ -81,19 +83,18 @@ module.exports = class Grid {
             .attr('class', 'axis axis--y')
             .call(yAxis);
 
-        svg
+        d3.select('.svg')
             .call(zoom)
             .on('mousemove', function() {
                 var xy = d3.mouse(this);
                 var xy1 = [xScale.invert(xy[0]), yScale.invert(xy[1])];
-                var transform = d3.zoomTransform(svg.node());
+                var transform = d3.zoomTransform(d3.select('.viewg').node());
                 var xy2 = transform.invert(xy1);
                 d3.select('.coord').text(function() {
                         return Math.round(xy2[0]) + ', ' + Math.round(xy2[1]);
                     });
             })
-            .on('wheel.zoom', null)
+            // .on('wheel.zoom', null)
             .on('dblclick.zoom', null);
-
     }
 }
