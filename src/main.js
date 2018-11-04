@@ -1,7 +1,7 @@
 var Panel = require('./Panel.js')
 var Grid = require('./Grid.js')
 var Ruler = require('./Ruler.js')
-var Figures = require('./Figures.js')
+var Objs = require('./Objects.js')
 var Anim = require('./Animation.js')
 var Config = require('./Config.js')
 
@@ -15,7 +15,7 @@ export class Visualizer {
             .attr('width', Config.width)
             .attr('height', Config.height)
             .style('background-color', '#eee')
-            .style('font-family', 'Times New Roman')
+            .style('font-family', 'Andale Mono')
             .style('font-size', '15px');
 
         d3.select('.block').append('svg')
@@ -51,7 +51,9 @@ export class Visualizer {
         Panel.create();
         Grid.create();
         Ruler.create();
-        Anim.create(new Figures(data));
+        var items = new Objs(data);
+        items.create();
+        Anim.create(items);
 
         d3.selectAll('.button')
             .datum(Config.button)

@@ -26,13 +26,8 @@ module.exports = class Intersections {
         var xi = x2 + rx, xi_prime = x2 - rx,
             yi = y2 + ry, yi_prime = y2 - ry;
 
-        return container.append('g').append('path')
-            .attr('d', function() {
-                return 'M' + xi + ',' + yi + 'A' + d2.attr('r') + ',' + d2.attr('r') +
-                ' 0 0,1 ' + xi_prime + ',' + yi_prime + 'A' + d1.attr('r') + ',' + d1.attr('r') +
-                ' 0 0,1 ' + xi + ',' + yi;
-            })
-            .style('fill-opacity', 0.7)
-            .style('fill', 'IndianRed');
+        return 'M' + xi + ',' + yi + 'A' + d2.attr('r') + ',' + d2.attr('r') +
+               ' 0 0,1 ' + xi_prime + ',' + yi_prime + 'A' + d1.attr('r') + ',' + d1.attr('r') +
+               ' 0 0,1 ' + xi + ',' + yi;
     }
 }
