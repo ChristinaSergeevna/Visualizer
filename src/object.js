@@ -36,9 +36,6 @@ module.exports = class Object {
                 case 'angle':
                     this.obj = Angle(this.data, type, this.container, this.style);
                     break;
-                case 'text':
-                    this.obj = Text(this.data, type, this.container, this.style);
-                    break;
                 default:
                     break;
             }
@@ -47,14 +44,15 @@ module.exports = class Object {
     }
 }
 
-function Text(data, type, container, style) {
+function Text(data, text, type, container) {
     return container.append('text')
         .attr('id', type)
         .attr('class', 'text')
         .attr('x', data[0])
         .attr('y', data[1])
-        .text(data[3])
-        .attr('font-size', '12px');
+        .text(text)
+        .attr('font-size', '12px')
+        .attr('text-anchor', 'middle');
 }
 
 function Circle(data, type, container, style) {
@@ -104,18 +102,15 @@ function IntersectionPoint(data, type, container, style) {
         .domain([-height / 2, height / 2])
         .range([0, height]);
 
-    container.append('text')
-        .attr('id', type)
-        .attr('class', 'textCoord')
-        // .attr('data', [data[0], data[1] - 20])
-        .attr('x', data[0])
-        .attr('y', data[1] - 20)
-        .attr('text-anchor', 'middle')
-        .text(Math.round(data[0]) + ', ' + Math.round(data[1]))
-        .attr('font-size', '12px');
-        // .attr('transform', function(d) {
-        //             return "translate(" + xScale(d[0]) + "," + yScale(d[1]) + ")";
-        //         });
+    Text([data[0], data[1] - 20], Math.round(data[0]) + ', ' + Math.round(data[1]), type, container);
+
+    // container.append('text')
+    //     .attr('id', type)
+    //     .attr('class', 'textCoord')
+    //     // .attr('data', [data[0], data[1] - 20])
+    //     // .attr('transform', function(d) {
+    //     //             return "translate(" + xScale(d[0]) + "," + yScale(d[1]) + ")";
+    //     //         });
 
     return container.append('circle')
         .attr('id', type)
@@ -124,7 +119,7 @@ function IntersectionPoint(data, type, container, style) {
         .styles(function(d) { return d; })
         .attr('cx', data[0])
         .attr('cy', data[1])
-        .attr('r', data[2]);
+        .attr('r', 3);
 }
 
 function AnimatedCircle(data, type, container, style) {
@@ -178,15 +173,18 @@ function Arc(data, type, container, style) {
 }
 
 function Segment(data, type, container, style) {
-    return container.append('g').append('path')
+    var seg = container.append('g').append('path')
         .datum(style)
         .styles(function(d) { return d; })
         .style('fill', 'IndianRed')
         .attr('d', function() {
-            return data;
+            return data[0];
         })
         .attr('id', type)
         .attr('class', 'segment');
+
+    Text(data[2], 'S = ' + data[1], type, container);
+    return seg;
 }
 
 function angleThreePoints(p1, p2, p3) {

@@ -1,0 +1,23 @@
+<!-- Task 6 -->
+<!-- Your task is to write a program, which, given two circles,
+calculates the area of their intersection with the accuracy of two
+digits after decimal point. -->
+
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'>
+        <title>Visualizer</title>
+        <script src='../d3/d3min.js'></script>
+        <script src='../lib/visualizer.js'></script>
+    </head>
+    <body>
+        <script type='text/javascript'>
+            Visualizer.SVG( [
+                            { id: 0, class: 'circle', ans: '100 100 50', sol: '100 100 50' },
+                            { id: 1, class: 'circle', ans: '101 101 10', sol: '101 101 10' },
+                            { id: 2, class: 'intersection', figures: [[0, 1]]              }
+                            ] );
+        </script>
+    </body>
+</html>
